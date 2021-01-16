@@ -1,0 +1,36 @@
+---
+title: "ESM 244 Lab Week 2"
+author: "Vanessa Rathbone"
+date: "1/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#attach libraries
+library(tidyverse)
+library(janitor)
+library(here)
+library(palmerpenguins)
+
+#for PCA
+library(ggfortify)
+
+#for ggplot customization
+library(readxl)
+library(gghighlight)
+library(lubridate)
+library(plotly)
+
+#to make compond figures
+library(patchwork)
+```
+
+## Part 1: PCA with Penguins
+```{r}
+#use 4 variables for our PCA biplot
+#first 
+
+```
+
