@@ -60,4 +60,55 @@ autoplot(penguin_pca,
 
 ```
 
-##
+## Part 2: ggplot2 customization & reading in different file types
+
+### Read in an .xlsx file and do some wrangling
+```{r}
+#read in xlsx file and wrangle
+fish_noaa <- read_excel(here("data", "foss_landings.xlsx")) %>% 
+  clean_names() %>% 
+  mutate(across(where(is.character), tolower)) %>%  #mutate/transform across all colums that are characters and change them to lower case
+  mutate(nmfs_name = str_sub(nmfs_name, end = -4)) %>%  #removes the last 4 characters in the existing column
+  filter(confidentiality == "public")
+```
+
+Make a customized graph:
+```{r}
+fish_plot <- ggplot(data = fish_noaa, aes(x = year, y = pounds))+
+  geom_line(aes(color = nmfs_name), show.legend = FALSE)+
+  theme_minimal()
+
+fish_plot
+
+ggplotly(fish_plot)
+
+##Use gghighlight to highlight certain series
+ggplot(data = fish_noaa, aes(x = year, y = pounds, group = nmfs_name))+
+  geom_line()+
+  theme_minimal() +
+  gghighlight(nmfs_name == "tunas")
+
+#hightlight any series with a max value is greater than x
+ggplot(data = fish_noaa, aes(x = year, y = pounds, group = nmfs_name))+
+  geom_line(aes(color = nmfs_name))+
+  theme_minimal() +
+  gghighlight(max(pounds) > 1e8)
+```
+
+### Read in data from a URL, `lubridata()`, `mutate()`, make a graph with months in logical order
+
+```{r}
+monroe_wt <- read_csv("https://data.bloomington.in.gov/dataset/2c81cfe3-62c2-46ed-8fcf-83c1880301d1/resource/13c8f7aa-af51-4008-80a9-56415c7c931e/download/mwtpdailyelectricitybclear.csv") %>% 
+  clean_names()
+
+```
+
+```{r}
+monroe_ts <- monroe_wt %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(record_month = month(date)) %>%  #use the month function to pull out the date in the "date" column
+  mutate(month_name = month.abb[record_month])
+  
+
+```
+
