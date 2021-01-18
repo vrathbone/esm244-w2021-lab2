@@ -30,7 +30,34 @@ library(patchwork)
 ## Part 1: PCA with Penguins
 ```{r}
 #use 4 variables for our PCA biplot
-#first 
+#first clean the data
+
+penguin_pca <- penguins %>% 
+  select(body_mass_g, ends_with("_mm")) %>% 
+  drop_na() %>% 
+  scale() %>% #scale the data
+  prcomp() #run principle compoents, now it's a pca, not a df
+
+#check out the lists in the pca, here we'll check out the rotation (or loadings for each variables)
+penguin_pca$rotation
+
+#make a dataset that match the dataframe that was used to make the pca, need this to change the aes of the autoplot
+penguin_complete <- penguins %>% 
+  drop_na(body_mass_g, ends_with("_mm"))
+
+#create a biplot, autoplot will check out the data and assume the type of plot to create, here a biplot - captures ~90% of our data in these two PCAs
+autoplot(penguin_pca, 
+         data = penguin_complete, 
+         colour = 'species',
+         loadings = TRUE,
+         loadings.label = TRUE) +
+  theme_bw()
+
+#what's this plot telling us. Correlations between variables and also id-ing major clusters and patters amongst the species. 
+#bodymass and flipper length have a positive correlation
+#flipper length and bill depth are negatively correlated
+
 
 ```
 
+##
