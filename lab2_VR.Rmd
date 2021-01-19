@@ -107,8 +107,51 @@ monroe_wt <- read_csv("https://data.bloomington.in.gov/dataset/2c81cfe3-62c2-46e
 monroe_ts <- monroe_wt %>% 
   mutate(date = mdy(date)) %>% 
   mutate(record_month = month(date)) %>%  #use the month function to pull out the date in the "date" column
-  mutate(month_name = month.abb[record_month])
+  mutate(month_name = month.abb[record_month]) %>% 
+  mutate(month_name = fct_reorder(month_name, record_month)) #can use levels function in the console: levles(monroe_ts$month_name), it will show the variables to be reordered according to the record month and therefore in the correct order
   
+monroe_ts_plot <- ggplot(monroe_ts, aes(month_name, y = total_k_wh)) +
+  geom_jitter(aes(color = month_name), 
+              show.legend = FALSE,
+              alpha = 0.5, 
+              size = 0.3,
+              width = 0.2)
+
+monroe_ts_plot
+
+ggplotly(monroe_ts_plot)
+
+```
+
+### Part 3: Compound figures with `patchwork`
+#### See more information about the `patchwork` package [HERE](https://patchwork.data-imaginist.com/). 
+
+```{r}
+graph_a <- ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point()
+
+graph_b <- ggplot(penguins, aes(x = species, y = flipper_length_mm)) +
+  geom_point(aes(color = species, show.legend = FALSE))
+
+# Use | to put graphs side by side
+# Use / to put graphs one over the other
+# Use & to change the theme to all of the plots
+
+graph_a | graph_b
+
+graph_c <- (graph_a | graph_b) / fish_plot & theme_dark()
+
+graph_c
+
+#Export the most recently run graph
+
+ggsave(here("fig", "graph_c_vr.png"), width = 5, height = 5)
+
+```
+
+### Part 4: 
+
+```{r}
 
 ```
 
